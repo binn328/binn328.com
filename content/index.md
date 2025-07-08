@@ -1,6 +1,14 @@
 ---
-title: Welcome to Quartz
+title: binn328
+description: binn328의 블로그입니다.
+date: 2024-11-23
+tags: 
+aliases: 
+draft: false
+permalink:
 ---
+# 👋환영합니다!
+제 블로그에 오신 것을 환영합니다!  
+이 곳은 제가 공부, 활동을 하면서 얻은 지식들 중, 다른 사람과 나누고 싶은 정보들을 공유하고자 만든 공간입니다. 아직 많은 글들이 있지는 않지만, 도움이 되는 정보를 얻어가시면 좋겠습니다.
 
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+
