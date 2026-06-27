@@ -7,4 +7,4 @@ aliases:
 draft: false
 permalink:
 ---
-# 📌이정빈 | 백엔드 개발자
+# 반가워요
