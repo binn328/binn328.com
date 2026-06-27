@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Quartz 5
+  pageTitle: 🪴binn328.com
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
@@ -12,7 +12,6 @@ configuration:
     - private
     - templates
     - .obsidian
-    - attachments
   theme:
     fontOrigin: googleFonts
     cdnCaching: true
@@ -203,7 +202,7 @@ plugins:
       priority: 30
       group: toolbar
   - source: github:quartz-community/reader-mode
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 35
@@ -215,10 +214,15 @@ plugins:
       priority: 5
       condition: not-index
   - source: github:quartz-community/comments
-    enabled: false
+    enabled: true
     options:
       provider: giscus
-      options: {}
+      options: 
+        repo: binn328/binn328.com
+        repoId: R_kgDOPI3qtQ
+        category: Announcements
+        categoryId: DIC_kwDOPI3qtc4C__ni
+        lang: ko
     layout:
       position: afterBody
       priority: 10
@@ -227,7 +231,7 @@ plugins:
     options:
       links:
         GitHub: https://github.com/binn328
-        About: "https://binn328.com/about"
+        About: https://binn328.com/about
   - source: github:quartz-community/recent-notes
     enabled: false
   - source: github:quartz-community/spacer
@@ -263,7 +267,7 @@ plugins:
       name: quartz-themes
       repo: github:saberzero1/quartz-themes
       subdir: plugin
-    enabled: true
+    enabled: false
     options:
       theme: things
   - source: github:quartz-community/obsidian-plugin-excalidraw

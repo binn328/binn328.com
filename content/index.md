@@ -1,14 +1,15 @@
 ---
-title: binn328
+title: Welcome to binn328.com
 description: binn328의 블로그입니다.
 date: 2024-11-23
-tags: 
-aliases: 
+aliases:
 draft: false
 permalink:
 ---
 # 👋환영합니다!
 제 블로그에 오신 것을 환영합니다!  
-이 곳은 제가 공부, 활동을 하면서 얻은 지식들 중, 다른 사람과 나누고 싶은 정보들을 공유하고자 만든 공간입니다. 아직 많은 글들이 있지는 않지만, 도움이 되는 정보를 얻어가시면 좋겠습니다.
 
+그리고 이 블로그는 [Quartz 5]()와 [Cloudflare pages]()를 통해 만들어졌으며, 2026년 6월 27일에 `Quartz 4`에서 `Quartz 5`로 업데이트되었습니다. 관심이 있다면 아래 게시글을 확인해보세요!
 
+- [[Server/Quartz4와 Cloudflare Pages로 블로그 만들기|Quartz4와 Cloudflare Pages로 블로그 만들기]]
+- [[Server/Quartz4를 Quartz5로 마이그레이션하기]]

@@ -3,10 +3,9 @@ title: Quartz4와 Cloudflare Pages로 블로그 만들기
 description: 옵시디언을 이용한 블로그를 만들어봅시다.
 date: 2025-07-08
 tags:
+  - service/quartz
   - cloudflare
-  - quartz4
-  - hosting
-aliases: 
+aliases:
 draft: false
 permalink:
 ---
