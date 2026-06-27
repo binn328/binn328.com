@@ -3,6 +3,9 @@ title: " Microsoft PC Manager"
 description: Microsoft PC Manager로 팝업 광고를 차단해봅시다.
 date: 2026-06-27
 tags:
+  - adblock
+  - windows11
+  - program
 aliases:
 draft: false
 permalink:
