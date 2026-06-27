@@ -158,3 +158,14 @@ git fetch --unshallow && npx quartz plugin install && npx quartz build
 ```
 ![[attachments/Pasted image 20260627204354.png]]**분기 제어**는 프로덕션 분기를 `v5`로 변경해줍니다.
 ![[attachments/Pasted image 20260627204501.png]]
+여기까지 설정을 마쳤다면 마지막으로 저장소에 그동안 설정한 파일들을 반영해주면 끝입니다. 아래 명령어를 사용하면 됩니다.
+```bash
+npx quartz sync
+```
+해당 명령어를 사용하면 변경사항을 저장소에 반영하고, **Cloudflare**가 변경사항을 감지하고 갱신을 시작합니다.
+![[Pasted image 20260627204819.png]]
+# 마무리
+![[Pasted image 20260627204909.png]]
+짜잔, 마이그레이션과 설정을 완료했습니다. 하지만 매번 반영을 위해 터미널을 켜고 `npx quartz sync{:bash}`를 입력해주기는 솔직히 좀 많이 귀찮습니다. 그렇다고 변경사항을 감지할 때마다 자동으로 실행되게 하면 **Cloudflare Pages**의 500회 한계에 걸리게 되고요. 그래서 다음엔 `Cron`을 이용해 주기적으로 갱신을 시도하는 동작을 만들어보겠습니다. 
+
+읽어주셔서 감사합니다.
