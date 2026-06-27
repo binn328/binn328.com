@@ -8,6 +8,8 @@ aliases:
 draft: false
 permalink:
 ---
+[[Quartz4와 Cloudflare Pages로 블로그 만들기|이전편]]
+
 `Quartz 4`와 `Cloudflare pages`를 통해 구축해둔 블로그를 `Quartz 5`로 마이그레이션하는 방법을 소개합니다. [공식 가이드](https://quartz.jzhao.xyz/getting-started/migrating)를 그대로 따라갔으며, 혹시 처음부터 시작하신다면 [공식 시작 가이드](https://quartz.jzhao.xyz/getting-started/)를 참조하시길 바랍니다.
 
 # 0. 기존 컨텐츠 백업하기

@@ -253,7 +253,7 @@ plugins:
       includedProperties:
 #        - description
         - tags
-        - modify
+        - last-modified
 #        - aliases
       excludedProperties: []
       hidePropertiesView: false

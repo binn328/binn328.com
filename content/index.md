@@ -2,7 +2,7 @@
 title: Welcome to binn328.com
 description: binn328의 블로그입니다.
 date: 2024-11-23
-modify: 2026-06-27
+last-modified: 2026-06-27
 aliases:
 draft: false
 permalink:
