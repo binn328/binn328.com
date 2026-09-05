@@ -1,10 +1,16 @@
 ---
-title: Window11 VM에 5500GT GPU 패스스루하기
-description: Proxmox 서버에서 GPU를 Window 11 VM에 패스스루 하기
+title: Window11 VM 생성하고 갤럭시 폴드 8에서 사용하기
+description: Proxmox 서버에서 Window11을 설치하고, Moonlight를 이용해 폴드 8을 서피스 폴드8로 만들어봅시다.
 date: 2026-09-05
 tags:
   - proxmox
   - passthrough
+  - galaxy_fold8
+  - apollo
+  - artemis
+  - moonlight
+  - windows11
+  - 5500gt
 aliases:
 draft: false
 permalink:
@@ -65,7 +71,7 @@ VM을 시작하고 Window11을 설치하려고 보면 아까 추가한 드라이
 
 설치가 끝나면 우선 VM은 종료한다. 이제 GPU 패스스루를 해야 한다.
 
-# 3. GPU 패스스루
+# 3. GPU 패스스루 준비
 우선 GPU 패스스루는 [이 블로그](https://god-logger.tistory.com/188)의 가이드를 많이 참고했다. 자세한 가이드 올려주셔서 감사합니다, 덕분에 3번의 삽질을 딛고 성공할 수 있었어요.
 
 일단 GPU 패스스루가 없어도 Moonlight를 설정하고 사용할 수는 있다. 하지만 GPU 가속이 불가능하기 때문에 **소프트웨어 인코딩**만 사용할 수 있으며, 이로 인해 **인코딩 성능 문제**와 **60FPS 이상을 지원하지 않는 문제**가 생긴다. 즉, 클라이언트 측에서 화면이 버벅인다는 느낌을 받게 된다.
@@ -226,4 +232,240 @@ BIOS Information
 추출이 완료되면 `Extracted` 폴더가 생성된다. 해당 폴더를 뒤져 `ADMGopDriver.efi`와 `vbios_1638.dat` 파일을 따로 바탕화면 같은 곳에 꺼내둔다. `efi` 파일을 `rom` 파일로 변환한 다음, 해당 두 파일을 Proxmox에 넣어줄 것이다.
 
 ## 7) AMDGopDriver.efi 파일을 Rom 파일로 변환
-[edk2-BaseTools](https://github.com/tianocore/edk2-BaseTools-win32)를 이용해 해당 작업을 할 수 있다. 윈도우의 바탕화면에 터미널을 열고 아
+[edk2-BaseTools](https://github.com/tianocore/edk2-BaseTools-win32)를 이용해 해당 작업을 할 수 있다. 윈도우의 바탕화면에 터미널을 열고 아래 명령어를 입력해 저장소를 복제해온다.
+
+```bash
+git clone https://github.com/tianocore/edk2-BaseTools-win32
+cd edk2-BaseTools-win32
+```
+
+그리고 아까 기록해둔 `Audio Device`의 장치 ID를 가져와 다음 명령어를 입력해 `efi`파일을 `rom`파일로 변환한다.
+
+```bash
+# 참고로 1002는 Vendor ID, 1637은 Device ID이다.
+EfiRom.exe -f 1002 -i 1637 -e AMDGopDriver.efi -o AMDGopDriver.rom
+```
+
+## 8) 파일을 Proxmox로 옮기기
+이렇게 생성한 `vios_1638.dat` 파일과 `AMDGopDriver.rom` 파일을 Proxmox의 `/usr/share/kvm` 디렉터리로 옮겨준다. 나는 공유 폴더 하나를 `nfs`로 연결해 사용하고 있어서 여길 통해 파일을 옮겼다. 만약 그런 환경이 아니라면 `scp`를 이용하거나, 파일을 클라우드 스토리지에 업로드하고 다운로드 링크를 복사해 Proxmox 측에서 `wget`이나 `curl`을 통해 다운로드하는 방법이 있다.
+
+다운로드를 끝내면 우선 윈도우 VM에 들어가 Apollo를 설치하자. GPU 패스스루를 진행하다보면 더 이상 Proxmox 콘솔에서 화면을 확인할 수가 없기 때문이다.
+
+# 4. VM에 Apollo 설치
+원격 제어 수단은 `RDP`, `Chrome Remote Desktop` 등으로 다양하지만, 나는 `Moonlight`, 그 중에서도 포크된 버전인 `Apollo`를 사용할 것이다. 이유는 설치만으로 가상 디스플레이 구성을 뚝딱 해주기 때문이다. 그 외에도 안드로이드에서 키보드 마우스를 사용하면 `win + tab` 등의 단축키가 안드로이드에서 사용되는 문제가 있는데, 이를 해결해준다거나, 화면 자동 회전 기능이 있다거나 등의 편의기능을 제공하기에 매우 편리하다.
+
+![[Pasted image 20260905211716.png]]
+윈도우 VM에서 [apollo 저장소](https://github.com/ClassicOldSong/Apollo/releases/tag/v0.4.6)에 접속해 설치를 진행한다.
+
+![[Pasted image 20260905211834.png]]
+설치를 마치면 우측 하단 트레이에서 하얀 톱니바퀴 모양의 Apollo를 우클릭해 `Open Apollo`를 선택한다.
+
+![[Pasted image 20260905211925.png]]
+본인이 대시보드에 로그인할 때 사용할 계정을 입력한다. 
+
+![[Pasted image 20260905212004.png]]
+생성을 마치면 잠시 후 로그인 페이지로 이동한다. 생성한 계정으로 로그인한다.
+
+![[Pasted image 20260905212037.png]]
+대시보드로 진입하면 우선 `Configuration`에서 `Locale`을 `한국어`로 변경해준다. 이후 하단에서 `Save`, `Apply`를 눌러 적용한다.
+
+그리고 폴드 8에 `Apollo`의 짝꿍인 [Artemis](https://github.com/ClassicOldSong/moonlight-android)를 설치하고 앱을 열면 VM이 보일 것이다. (같은 네트워크에 연결되어 있어야 한다).
+
+![[Pasted image 20260905212529.png]]
+접속을 시도하면 4자리 숫자의 PIN이 표시된다. 상단의 `핀 - PIN 페어링`에 들어가 페어링을 해준다.
+
+![[Pasted image 20260905212725.png]]
+페어링 후 접속하면 폴드 8에서 보조 디스플레이처럼 동작하게 된다. 폴드 8이 사용 중이지 않은 디스플레이를 비활성화시킨다.
+
+이제 Proxmox 콘솔에서는 화면을 확인할 수가 없으므로 VM 작업은 폴드 8에서 진행해야한다. 미리 배율 등을 설정해 작업하기 편하게 만들어주고 VM을 종료한다.
+# 5. GPU 패스스루 진행
+이제 GPU 패스스루를 마저 진행하면 된다.
+
+## 1) PCI 디바이스 추가
+![[Pasted image 20260905213058.png]]
+우선 Proxmox 대시보드에서 VM의 `하드웨어` 메뉴에 들어가 `PCI 디바이스`를 추가해준다. 처음으로 추가할 것은 GPU, 아까 적어둔 IOMMU Group을 확인해 `Raw 디바이스`를 추가하고, `메인 GPU`, `ROM-Bar`, `PCI-Express`를 활성화하여 추가한다.
+
+![[Pasted image 20260905213217.png]]
+두 번째로 추가할 것은 `오디오 장치`이다. 역시 아까 적어둔 IOMMU Group을 확인해 `Raw 디바이스`를 추가하고 `ROM-Bar`, `PCI-Express`를 활성화한다. 당연하게도 `메인 GPU`는 활성화하지 않는다.
+
+## 2) vm 설정 파일 수정
+이제 VM의 대시보드에서 구성할 수 없는 설정을 수정해야한다.
+
+```bash
+# VM 설정을 편집기로 연다. VM ID 확인 후 진행한다.
+nano /etc/pve/qemu-server/${VM번호}.conf
+```
+
+
+```bash title="/etc/pve/qemu-server/101.conf" {6, 9, 10}
+agent: 1
+balloon: 0
+bios: ovmf
+boot: order=scsi0;ide0;net0;ide1;ide2
+cores: 6
+cpu: host
+efidisk0: local-btrfs:101/vm-101-disk-0.raw,efitype=4m,ms-cert=2023k,pre-enrolled-keys=1,size=528K
+hostpci0: 0000:03:00.0,pcie=1,x-vga=1
+hostpci1: 0000:03:00.1,pcie=1
+ide2: ssd01:iso/virtio-win-0.1.302.iso,media=cdrom,size=856810K
+machine: pc-q35-11.0+pve2
+memory: 16386
+meta: creation-qemu=11.0.3,ctime=1788320680
+name: window11
+numa: 0
+onboot: 1
+ostype: win11
+scsi0: local-btrfs:101/vm-101-disk-1.raw,discard=on,iothread=1,size=256G,ssd=1
+scsihw: virtio-scsi-single
+sockets: 1
+tpmstate0: local-btrfs:101/vm-101-disk-2.raw,size=4M,version=v2.0
+```
+
+```bash title="/etc/pve/qemu-server/101.conf" {6, 9, 10}
+agent: 1
+balloon: 0
+bios: ovmf
+boot: order=scsi0;ide0;net0;ide1;ide2
+cores: 6
+cpu: host,hidden=1
+efidisk0: local-btrfs:101/vm-101-disk-0.raw,efitype=4m,ms-cert=2023k,pre-enrolled-keys=1,size=528K
+hostpci0: 0000:03:00.0,pcie=1,romfile=vbios_1638.dat,x-vga=1
+hostpci1: 0000:03:00.1,pcie=1,romfile=AMDGopDriver.rom
+ide2: ssd01:iso/virtio-win-0.1.302.iso,media=cdrom,size=856810K
+machine: pc-q35-11.0+pve2
+memory: 16386
+meta: creation-qemu=11.0.3,ctime=1788320680
+name: window11
+numa: 0
+onboot: 1
+ostype: win11
+scsi0: local-btrfs:101/vm-101-disk-1.raw,discard=on,iothread=1,size=256G,ssd=1
+scsihw: virtio-scsi-single
+sockets: 1
+tpmstate0: local-btrfs:101/vm-101-disk-2.raw,size=4M,version=v2.0
+```
+
+`cpu`에 `hidden=1` 옵션을, 패스스루한 pcie 장치에 롬 파일을 맵핑시켜준다.
+
+그리고 VM을 부팅시켜 확인할 시간이다!
+# 6. VM 확인
+우선 VM에 들어가 [AMD 드라이버](https://www.amd.com/ko/support/download/drivers.html)를 설치해준다. 이후 재부팅을 하고 장치 관리자를 들어가본다.
+
+![[Pasted image 20260905215228.png]]
+이런 식으로 `AMD Radeon(TM) Graphics`가 오류없이 잡혀있다면 성공이다. 
+
+![[Pasted image 20260905215339.png]]
+하지만 이런 식으로 `-43 에러`가 표시되고 그래픽 카드가 제대로 잡히지 않았을 수도 있다. 이 경우, 우선 재부팅을 해본다. Window VM이 아닌, **Proxmox** 자체를 재부팅 시켜야 한다. 구성은 올바른데, AMD reset 버그 때문에 생긴 일시적인 현상일 수도 있기 때문이다. VM이 재부팅되어 AMD 그래픽 카드도 초기화가 되어야 하지만, 버그로 인해 그렇지 못해서 그래픽 카드를 사용할 수 없는 현상이 AMD reset 버그이다.
+
+이걸로 해결이 되었다면 다행이지만, 일단 해결이 안 되었더라도 다음 단계를 진행하도록 하자. 오류없이 잡혀있더라도 다음 단계는 진행을 해야 한다. 그렇지 않으면 VM을 재부팅할 때마다 Proxmox 자체를 재부팅시켜야 그래픽 카드가 정상적으로 잡히는 끔찍한 일을 당하게 된다.
+
+# 7. vendor-reset 패치
+아까 전에 `/etc/modules` 파일을 수정할 때, 제일 위에 `vendor-reset`을 넣어두었다. 다시 한 번 강조하지만, **제일 위에 작성해야 한다**. [참고 링크](https://github.com/gnif/vendor-reset/issues/85) 
+이제 해당 모듈을 실제로 적용해보자. `-43 에러`와 AMD Reset bug를 해결하기 위해선 반드시 필요하다.
+
+```bash
+uname -r
+```
+우선 현재 사용 중인 커널의 버전을 확인한다.
+
+```bash
+apt install pve-headers-${버전}
+# ex) apt install pve-headers-7.0.14-4-pve
+```
+그리고 해당 버전의 커널 소스코드를 가져온다.  나는 현재 `7.0.14-4-pve` 버전을 사용하고 있다.
+
+```bash
+# 커널 빌드 도구를 설치한다.
+apt install git dkms build-essential
+
+# vendor-reset 모듈을 가져온다.
+git clone https://github.com/gnif/vendor-reset
+cd vendor-reset
+
+# 커널 빌드 경로에 vendor-reset을 추가한다.
+dkms add .
+
+# 커널 빌드를 수행하고
+dkms build vendor-reset/0.1.1 -k ${버전}
+# ex) dkms build vendor-reset/0.1.1 -k 7.0.14-4-pve
+
+# 빌드된 커널을 설치한다.
+dkms install vendor-reset/0.1.1 -k ${버전}
+# ex) dkms install vendor-reset/0.1.1 -k 7.0.14-4-pve
+
+# 설치된 커널을 확인한다.
+# 목록에 vendor-reset... 이 있다면 성공이다.
+dkms status
+
+# 커널 이미지에 수정사항을 반영한다.
+update-initramfs -u 
+```
+커널을 빌드하고 설치한다.
+
+```bash
+# 커널 모듈 의존성을 갱신한다.
+dpmod -a
+
+# 수동으로 모듈을 로드해 오류가 없는지 확인한다.
+modprobe vendor_reset
+
+# 모듈이 로드되었는지 확인한다.
+lsmod | grep vendor
+
+# 이런 식으로 나온다면 성공이다.
+# vendor_reset          114688  0
+
+# 이제 재부팅한다.
+reboot
+```
+모듈을 수동으로 테스트한 후, 재부팅한다.
+
+![[Pasted image 20260905221239.png]]
+재부팅 후 VM을 실행해 그래픽이 잘 잡혔는지 확인한다.
+
+# 8. 소리 설정
+오디오 컨트롤러까지 넘겼지만, 현재 윈도우에는 사용할 수 있는 장치가 없다고 표시될 것이다. 이걸 해결하는 방법은 2가지가 있다.
+## 1) 가상 오디오 장치 추가하기 (비추천)
+![[Pasted image 20260905222034.png]]
+`하드웨어` 메뉴에서 오디오 디바이스를 추가해주는 방법이다. 하지만 추천하지는 않는데, 원격 접속 후 유튜브에서 노래를 하나 틀어보면 바로 알 수 있다. 소리가 중간중간 멈추거나, 퍽퍽 거리는 소리가 섞여 들린다. 테스트 용도로는 적합하지만, 실사용은 무리이다.
+
+## 2) 스팀 설치하기
+![[Pasted image 20260905222602.png]]
+스팀은 설치하면 **SteamLink**에서 사용하기 위해 `Steam Streaming Speakers`를 소리 장치로 추가해준다. 그리고 **Moonlight**는 원격 시에 해당 장치를 이용해 오디오를 클라이언트에 전달할 수 있다. 가상으로 추가된 장치가 아니라, VM에 존재하는 가상 오디오 장치이기 때문에 아까처럼 퍽퍽 튀는 소리 없이, 실제 컴퓨터에서 들리는 소리처럼 매끄럽게 들린다. 비슷한 방법으로 `VB-CABLE`을 사용하는 방법도 있긴 한데, 스팀을 설치하는게 가장 구성이 쉽고 편리하다.
+
+# 9. 이후 기타 설정
+## 1) 초기설정 백업하기
+![[Pasted image 20260905222837.png]]
+우선 문제가 없는 것을 확인했다면, 그 즉시 백업을 하나 해두도록 하자. 나중에 만지다가 망가져도, 윈도우 포맷이 필요해도, 언제든 돌아올 수 있도록.
+
+## 2) 윈도우 AI 기능 제거
+[[Remove Windows AI |이전에 쓴 글]] 에서도 언급했지만, [RemoveWindowsAI](https://github.com/zoicware/RemoveWindowsAI)를 이용해 윈도우 11의 AI 기능들을 모두 제거하는 것을 추천한다. 메모리 금값 시대에 가뜩이나 모자란 VM의 램을 갉아먹는 AI 기능들은 하등 쓸모가 없다. 
+
+## 3) Window 10 UI 복원
+[Explorer Patcher](https://explorerpatcher.net/)를 통해 매우매우 불편한 윈도우 11의 UI를 윈도우 10의 것으로 되돌릴 수 있다.
+
+![[Pasted image 20260905223311.png]]
+가장 중요한 우클릭 메뉴부터, 작업 표시줄을 되돌리고
+
+![[Pasted image 20260905223345.png]]
+파일 탐색기의 상단 리본 메뉴도 윈도우 10의 것으로 변경할 수 있다. 
+
+![[Pasted image 20260905223413.png]]
+그 외에도 쓸모없는 단축키를 유용한 단축키로 변경하는 등, 다양한 편의기능이 있으니 꼭 사용하는 것을 추천한다.
+## 4) 태블릿 웹페이지 이용하기
+폴드8의 화면이 크다고는 하지만, 그래도 PC 버전 웹 페이지를 이용하다보면 불편한 점이 있다. 대표적인게 터치에 최적화가 되지 않은 UI가 많다는 점.
+
+이 부분은 `User-Agent`를 변경해주면 해결할 수 있다. **Firefox**에서는 `User-Agent Switcher`라는 확장 프로그램을 이용할 수 있다.
+
+![[Pasted image 20260905225336.png]]
+유튜브의 경우 PC UI로는 이렇게 표시되지만
+
+![[Pasted image 20260905225350.png]]
+`User-Agent`를 `Android Tablet`으로 변경하면 이렇게 표시된다.
+
+폴드 8의 외부 화면을 사용할 경우 `Android Phone`으로 설정하는 등, 상황에 맞춰 편리하게 이용할 수 있다.
+# 마무리
+![[20260905_181501 - 복사본 1.jpg]]
+(~~S23FE 로 찍은거라 화질이 영 구리다~~)
+
+이게 서피스 듀오가 꿈꾸던 미래가 아니었을까... 서피스 프로를 두 손으로 들고 사용하기는 솔직히 힘든데 이건 침대에서 사용해도 전혀 무리가 없어 매우 만족스럽다.
