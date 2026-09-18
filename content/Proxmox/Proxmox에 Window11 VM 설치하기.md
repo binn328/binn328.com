@@ -388,11 +388,11 @@ cd vendor-reset
 dkms add .
 
 # 커널 빌드를 수행하고
-dkms build vendor-reset/0.1.1 -k ${버전}
+dkms build vendor-reset/0.1.1 -k $(uname -r)
 # ex) dkms build vendor-reset/0.1.1 -k 7.0.14-4-pve
 
 # 빌드된 커널을 설치한다.
-dkms install vendor-reset/0.1.1 -k ${버전}
+dkms install vendor-reset/0.1.1 -k $(uname -r)
 # ex) dkms install vendor-reset/0.1.1 -k 7.0.14-4-pve
 
 # 설치된 커널을 확인한다.
