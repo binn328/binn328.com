@@ -1,5 +1,5 @@
 ---
-title: Window11 VM 생성하고 갤럭시 폴드 8에서 사용하기
+title: "[Proxmox] Windows 11 VM 구축하고 Moonlight로 원격 접속하기"
 description: Proxmox 서버에서 Window11을 설치하고, Moonlight를 이용해 폴드 8을 서피스 폴드8로 만들어봅시다.
 date: 2026-09-05
 tags:
@@ -164,10 +164,11 @@ lspci -D -nnk | grep "AMD/ATI"
 
 현재 사용 중인 CPU는 `5500GT`이다. 다른 CPU를 사용 중이라면 다르게 나올 것이다. 본인에게 맞춰 다음과 같이 기록해두도록 하자.
 
-|      장치      | IOMMU Group  |    ID     |
-| :----------: | :----------: | :-------: |
-|     VGA      | 0000:03:00.0 | 1002:1638 |
+| 장치           | IOMMU Group  | ID        |
+| :----------- | :----------- | :-------- |
+| VGA          | 0000:03:00.0 | 1002:1638 |
 | Audio Device | 0000:03:00.1 | 1002:1637 |
+
 오디오 장치는 왜? 라고 생각할 수도 있다. 우리는 현재 VM의 바이오스를 `UEFI`로 설정했기 때문에 GPU만 패스스루를 시키면 `-43 에러`를 마주하게 된다. 이를 해결하는 방법이 오디오 장치를 함께 넘겨주는 것이기 때문에 오디오 장치도 기록해두는 것이다. ([출처](https://github.com/isc30/ryzen-gpu-passthrough-proxmox#optional-getting-ovmf-uefi-bios-working-error-43))
 
 ## 5) VIFO 바인딩
