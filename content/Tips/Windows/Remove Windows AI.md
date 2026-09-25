@@ -8,7 +8,7 @@ tags:
   - ai
   - widget
 aliases:
-draft: false
+draft: true
 permalink:
 ---
 # 16GB로 버틸 수 없는 엄청난 메모리 사용량

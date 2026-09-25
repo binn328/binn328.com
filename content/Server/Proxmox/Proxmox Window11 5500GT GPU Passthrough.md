@@ -1,6 +1,6 @@
 ---
-title: "[Proxmox] Windows 11 VM 구축하고 Moonlight로 원격 접속하기"
-description: Proxmox 서버에서 Window11을 설치하고, Moonlight를 이용해 폴드 8을 서피스 폴드8로 만들어봅시다.
+title: Proxmox Window 11 5500GT GPU Passthrough하기
+description: Proxmox에 Window11 VM을 설치 후, 5500GT의 GPU를 Passtrough하기
 date: 2026-09-05
 tags:
   - proxmox

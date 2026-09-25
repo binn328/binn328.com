@@ -6,4 +6,8 @@ aliases:
 draft: false
 permalink:
 ---
-# 반가워요
+# About Me
+
+
+# 둘러보기
+![[Pasted image 20260925190036.png]]
