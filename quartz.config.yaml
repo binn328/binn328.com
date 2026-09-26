@@ -250,11 +250,7 @@ plugins:
     enabled: true
     options:
       includeAll: false
-      includedProperties:
-#        - description
-#        - tags
-#        - last-modified
-#        - aliases
+      includedProperties: []
       excludedProperties: []
       hidePropertiesView: true
       delimiters: ---
