@@ -1,5 +1,5 @@
 ---
-title: Proxmox Window 11 5500GT GPU Passthrough하기
+title: Window 11 VM에 5500GT GPU Passthrough하기
 description: Proxmox에 Window11 VM을 설치 후, 5500GT의 GPU를 Passtrough하기
 date: 2026-09-05
 tags:
